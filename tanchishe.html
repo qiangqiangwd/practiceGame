@@ -1,0 +1,153 @@
+<!DOCTYPE HTML>
+<html>
+<style type="text/css">
+    body {
+        width: 550px;
+        height: 550px;
+        margin: auto;
+    }
+    #div1 {
+        width: 400px;
+        height: 400px;
+        float:left;
+        /*background-image: url("img/fang.jpeg");*/
+        /*background-size: 100%;*/
+    }
+    #div2 {
+        float:right;
+        margin-top: 50px;
+        /*border: 1px solid red;*/
+        /*display: none;*/
+    }
+    #div3{
+        border: 1px solid #44ff14;
+        width: 400px;
+        height: 400px;
+        background-image: url("img/fang.jpeg");
+        background-size:400px;
+        display: none;
+    }
+</style>
+<body>
+<div id="div1">
+    <audio src="img/bg.mp3" autoplay="autoplay" loop="loop"></audio>
+    <canvas id="myCanvas" width="400" height="400" style="border: 1px solid red"></canvas>
+</div>
+<div id="div2">
+    <a href="tanchishe.html">点我再来</a><br/><br/><br/>
+    <span id="span1">获得天猫积分&nbsp;<span id="span2"></span></span>
+    <span id="span3"><span id="span4"></span></span><br/>
+</div>
+<div id="div3"></div>
+<script type="text/javascript">
+    var c = document.getElementById("myCanvas");
+    var time=168; //蛇的速度
+    var cxt = c.getContext("2d");
+    var x = y = 8;
+    var sx = 0; //食物坐标
+    var sy = 0; //食物坐标
+    var t = 2; //舍身长
+    var map = []; //记录蛇运行路径
+    var size = 8; //蛇身单元大小
+    var direction =2; // 1 向上 2 向右 0 左 3下
+    var j = 0;//积分
+//    var s = 0;//显示速度
+    var span2=document.getElementById("span2");//积分
+    var span4 = document.getElementById("span4");//速度
+    var div3=document.getElementById("div3");
+    var div2=document.getElementById("div2");
+//    setInterval(fff,100);
+    var yidong=setInterval(set_game_speed, time); // 移动蛇
+    var shang;
+    var xia;
+    var zuo;
+    var you;
+    function set_game_speed() { // 移动蛇
+        if (direction == 1) {
+            y = y - size;
+            shang=direction=1;
+            console.log(shang)
+        } else if (direction == 2) {
+            x = x + size;
+            you=2;
+//            console.log("右")
+        } else if (direction == 3) {
+            x = x - size;
+            zuo=direction=3;
+//            console.log("左")
+        } else if (direction == 0) {
+            y = y + size;
+            xia=direction=0;
+//            console.log("下")
+        }
+        if (x > 392 || x < 0 || y > 392 || y < 0) {
+            div3.style.display="block";
+            div2.style.display="block";
+            c.style.display="none";
+//            x = 1
+//            alert("撞墙了。。。");window.location.reload();
+        }
+//            alert("你挂了，继续努力吧!失败原因：碰壁了.....");window.location.reload();
+        for(var i=0;i<map.length;i++){
+            if( parseInt(map[i].x)==x && parseInt(map[i].y)==y){
+                div3.style.display="block";
+                div2.style.display="block";
+                c.style.display="none";
+//                alert("你挂了，继续努力吧！失败原因：撞到自己了.....");window.location.reload();
+            }
+        }
+        if (map.length > t) { //保持舍身长度
+            var cl = map.shift(); //删除数组第一项，并且返回原元素
+            cxt.clearRect(cl['x'], cl['y'], size, size);
+        }
+        map.push({'x': x, 'y': y}); //将数据添加到原数组尾部
+        cxt.fillStyle = "#006699";//内部填充颜色
+        cxt.strokeStyle = "#006699";//边框颜色
+        cxt.fillRect(x, y, size, size);//绘制矩形
+        if ((sx*8) == x && (sy*8) == y) { //吃食物
+            span2.innerHTML="";
+            span4.innerHTML="";
+            rand_frog();//创建食物
+            t++;
+            time-=1;//增加速度
+            console.log(time);
+            clearInterval(yidong);//清除移动设的定时器
+            setInterval(set_game_speed, time); // 创建移动蛇的定时器
+//            s+=5;
+//            span4.innerHTML+=""+s
+        }
+    }
+    document.onkeydown = function (e) { //改变蛇方向
+        var code = e.keyCode - 37;
+//        console.log(qq);
+        if (code == 1) {
+            direction = 1;
+                console.log(shang)
+        } else if (code == 2) {
+            direction = 2;
+            console.log(shang)
+        } else if (code == 0) {
+            direction = 3;
+            console.log(shang)
+        } else if (code == 3) {
+            direction = 0;
+            console.log(shang)
+        }
+    };
+    // 随机放置食物
+    function rand_frog() {
+        j++;
+        sx = Math.ceil(Math.random() * 40+1);
+        sy = Math.ceil(Math.random() * 40+1);
+        cxt.fillStyle = "green";//内部填充颜色
+        cxt.strokeStyle = "red";//边框颜色
+        cxt.shadowBlur=5;
+        cxt.shadowColor="red";
+        cxt.fillRect(sx*8 , sy*8 , 8, 8);//绘制矩形
+        span2.innerHTML+=""+j
+    }
+    // 随机放置食物
+    rand_frog();
+</script>
+</body>
+</html>
